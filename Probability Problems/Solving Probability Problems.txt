@@ -1,0 +1,96 @@
+### For X ~ beta(2,5), Find P(X>0.5) by:
+
+### Monte Carlo Integration
+
+y = runif(25000)
+c = .5*(gamma(7))/(gamma(2)*gamma(5))
+mean(c*(.5*y+.5)*(.5-.5*y)^4)
+[1] 0.1089911
+
+
+### Rejection Saqmpling with uniform reference density
+u = runif(25000) ### u is a draw from unif(0,1)
+
+for(i in 1:25000) {
+  y = runif(1)  ### draw from q(x) ~ unif(0,1)
+  q = u[i]
+  p= q*(1-q)^4
+  if (y < p) { ### draw from q is accepted
+    Beta = c(Beta, q)
+    t = t+ 1
+  }
+  else { ### draw from q is rejected
+    t = t+ 1
+    f = f+ 1
+  }
+}
+length(Beta[Beta > .5])
+[1] 0.1
+
+### Using built-in pbeta function
+1- pbeta(.5, 2, 5)
+[1] 0.109375
+Therefore, the theoretical probability P(X > 1/2) where X ~ Beta(2,5) is .109375
+
+
+### For X ~ N(0,1), Find P(-1.96 < X < 1.96) by:
+
+### Monte Carlo Integration
+y = runif(25000) 
+c = (3.92/((2*pi)^.5))
+mean(c*exp(-.5*(3.92*y-1.96)^2))
+[1] 0.9489364
+
+### Rejection sampling with exponential reference density
+Normal = NULL
+t = 0 
+f = 0
+u = runif(25000)
+for(i in 1:25000) {
+  ### Use inverse CDF sampling to find a realization from exp(0.5)
+  y = runif(1)
+  x = -log(1-y) # draw fom exp(0.5)
+  
+  q = u[i]
+  p = exp(x-.5-.5*x^2) ### probability of accepting q as a Normal realization 
+  if(u < p) { ### q is accepted
+    t = t + 1
+    n = runif(1) 
+    if (n < .5) { # save x as a negative
+      negative = -1*x
+      Normal = c(Normal, negative)
+    }
+    else { ### save x as positive
+      Normal = c(Normal, x)
+      }
+  }
+  else { ### q is rejected
+    t = t + 1
+    f = f + 1
+    }
+}
+length(Normal[Normal > -1.96 & Normal < 1.96])/length(Normal)
+[1] 0.9504468
+
+### Using the built-in pnorm function
+pnorm(1.96) - (1 - pnorm(1.96))
+[1] 0.9500042
+Therefore, the theoretical probability P(-1.96 < X < 1.96) where X ~ Norm(0,1) is .95
+
+### Using the polar method to sample (x, y) pairs from independent ### standard normal distributions to find a value k that satisfies
+### P(sqrt(X^2 + Y^2) < k) = 0.5
+
+rsq = NULL
+u = runif(25000)
+rsq = -2*log(1-u) ### generates r-squared from exp(0.5)
+
+theta = runif(25000, 0 ,(2*pi)) ### generates an angle form unif(0,2pi)
+
+### Now, convert Polar (r, theta) to Cartesian (x,y)
+x = sqrt(rsq)*cos(theta)
+y = sqrt(rsq)*sin(theta)
+
+pair = sqrt(x^2 + y^2)
+median(pair)
+[1] 1.165588
+Therefore, the value of k that satisfies the given probability statement is k = 1.17
