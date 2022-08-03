@@ -1,0 +1,139 @@
+> ### Number 1a
+> Gamma = NULL
+> for(i in 1:7500){
+  y = runif(10)
+  x = -(log(1-y))/4
+  tot = sum(x)
+  Gamma = c(Gamma, tot)
+}
+> mean(Gamma)
+[1] 2.509099
+> (sd(Gamma))^2
+[1] 0.6251199
+The estimated mean and variance are 2.5091 and 0.6251, respectively.
+For X ~ Gamma(10,4), the theoretical values of the mean and variance of X are
+E[X] = 10/4 = 2.5 and Var[X] = 10/16 = .625 (see figure 1)
+
+> ### Number 1b
+Cauchy = NULL
+for(i in 1:7500) {
+  y = runif(1)
+  x = tan(pi*(y-.5))
+  Cauchy = c(Cauchy, x)
+}
+> mean(Cauchy)
+[1] 1.452842
+> (sd(Cauchy))^2
+[1] 8986.254
+
+> ### Number 1c
+Cauchy = NULL
+Normal = NULL
+t = 0 
+f = 0 
+for(i in 1:7500) { ### sampling from Cauchy distribution
+  y = runif(1)
+  x = tan(pi*(y-.5))
+  Cauchy = c(Cauchy, x)
+}
+ 
+x.s = Cauchy
+for(i in 1:7500) {
+  u = runif(1)
+  q = Cauchy[i]
+  p = (((q^2) + 1)*exp(.5 - ((q^2)/2))*.5)
+  if(u < p) { ### if q is accepted
+     Normal = c(Normal, q)
+     t = t + 1
+   }
+  else { ### q is rejected
+     t = t+1 
+     f = f+1
+     }
+ }
+> mean(Normal)
+[1] -0.01455801
+> (sd(Normal))^2
+[1] 0.9531944
+The estimated mean and variance are -.0146 and 0.9532, respectively
+For X ~ Norm(0, 1), the theoretical values of the mean and variance of X are 
+E[X] = 0 and Var = 1 (see figure 2)
+
+> ### Number 2
+Bernoulli = NULL
+Geometric = NULL
+p = 0.83
+for(k in 1:7500) {  
+  for(i in 1:500) {
+    u = runif(500) 
+    if(u[i] < p) { ### If draw is a success
+      Bernoulli =c(Bernoulli, 1)
+    }
+    else { ### If draw is a fail
+      Bernoulli = c(Bernoulli, 0)
+    }
+  }
+  x = match(1, Bernoulli)
+  Geometric = c(Geometric, x)  
+}
+
+> ### Number 2b
+Binomial = NULL
+p = 0.02
+bin = 0
+
+for(k in 1:7500){
+  y = runif(200)
+  Bernoulli = NULL
+  for (i in 1:200) { ### Convert to Bernoulli
+    if(y[i] < p) { ### If draw is a success
+      Bernoulli =c(Bernoulli, 1)
+      }
+    else { ### If draw is a fail
+      Bernoulli = c(Bernoulli, 0)
+    }
+  }  
+  bin = sum(Bernoulli)
+  Binomial = c(Binomial, bin)
+}
+> mean(Binomial)
+[1] 4.018533
+> (sd(Binomial))^2
+[1] 3.913112 
+The estimated mean and variance are 4.0185 and 3.9131, respectively.  
+For X ~ Bin(200, 0.02), the theoretical values of the mean and variance of X are 
+E[X] = np = 4 and Var = np(1-p) = 3.92
+
+### Number 2c
+Exponential = NULL
+Poisson = NULL
+lambda = 2.1
+
+for(k in 1:7500){
+  sum = 0
+  counter = 0 
+  y = runif(20)
+  Exponential = -(log(1-y)/lambda) ### Realizations from exponential density
+  for(i in 1:20){  ### Number of exp. realizations for sum to exceed 1
+   
+    if(sum < 1)  {
+      sum = sum + Exponential[i]
+      counter = counter + 1
+    }
+    else{
+      sum = 0
+      counter = 0
+      break
+    }
+  }
+  x = counter -1
+  Poisson = c(Poisson, x)
+}
+> mean(Poisson)
+[1] 2.102
+> (sd(Poisson))^2
+[1] 2.066272
+The estimated mean and variance are 2.102 and 2.0663, respectively.  
+For X ~ Pois(2.1), the theoretical values for the mean and variance of X are 
+E[X] = Var[x] = lambda = 2.1
+
