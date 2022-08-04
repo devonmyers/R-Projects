@@ -1,0 +1,158 @@
+### Using Gibbs Sampling to determine the impact of an informative prior
+First, define a function Gibbs that takes in parameters nu, sigsq_0, and kap.  
+These parameters will allow us to evaluate the impact of kappa on the marginal posterior for mu and the impact
+of  nu and sigsq_0 on the marginal posterior for sigsq.
+We will evaluate the impact of these parameters by making 8 comparisons for various values of nu, kappa, and sigsq_0
+and using the built-in quantile and variance functions.
+
+nu = NULL
+sigsq_0 = NULL
+kap = NULL
+post_sig = NULL
+post_mu = NULL
+### Comparison #1 nu = kappa = sigsq_0 = 1 
+
+compare_1 = Gibbs(1,1,1)
+sigsq_1 = compare_1[1:5000]
+mu_1 = compare_1[5001:10000]
+quantile(sigsq_1, probs = c(.025, .975), na.rm = TRUE)
+        2.5%        97.5% 
+   0.1977814 1254.4573543 
+var(sigsq_1)
+[1] 3.213242e+12
+quantile(mu_1, probs = c(.025, .975), na.rm = TRUE)      
+      2.5%      97.5% 
+-0.7899275 35.5857733 
+var(mu_1)
+[1] 32524.1
+
+### Comparison #2 nu= 10, kappa = sigsq_0 = 1
+
+compare_2 = Gibbs(10,1,1)
+sigsq_2 = compare_2[1:5000]
+mu_2 = compare_2[5001:10000]
+quantile(sigsq_2, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+0.4939109 3.0619728 
+var(sigsq_2)
+[1] 0.4880796
+quantile(mu_2, probs = c(.025, .975), na.rm = TRUE)
+      2.5%      97.5% 
+-0.8981616  3.0894554 
+var(mu_2)
+[1] 1.036378
+
+### Comparison #3 nu = 1, kappa = 50, sigsq_0 = 1
+
+compare_3 = Gibbs(1,50,1)
+sigsq_3 = compare_3[1:5000]
+mu_3 = compare_3[5001:10000]
+quantile(sigsq_3, probs = c(.025, .975), na.rm = TRUE)
+       2.5%       97.5% 
+   10.07709 63071.19905 
+var(sigsq_3)
+[1] 2.392571e+13
+quantile(mu_3, probs = c(.025, .975), na.rm = TRUE)
+      2.5%      97.5% 
+  2.755962 250.896469 
+var(mu_3)
+[1] 203264.9
+
+### Comparison #4 nu = kappa = 1, sigsq_0 = 200
+
+compare_4 = Gibbs(1,1,200)
+sigsq_4 = compare_4[1:5000]
+mu_4 = compare_4[5001:10000]
+quantile(sigsq_4, probs = c(.025, .975), na.rm = TRUE)
+        2.5%        97.5% 
+   0.2054529 1226.8562920 
+var(sigsq_4)
+[1] 12025380039
+quantile(mu_4, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+-1.788525  3.097612 
+var(mu_4)
+[1] 15.81679
+
+
+### Comparison #5 nu = 10, kappa = 50, sigsq_0 = 1 
+
+compare_5 = Gibbs(10,50,1)
+sigsq_5 = compare_5[1:5000]
+mu_5 = compare_5[5001:10000]
+quantile(sigsq_5, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+ 24.26392 159.11792 
+var(sigsq_5)
+[1] 1222.807
+quantile(mu_5, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+ 4.106441 12.732509 
+var(mu_5)
+[1] 4.719636
+
+### Comparison #6 nu = 10, kappa = 1, sigsq_0 = 200 
+
+compare_6 = Gibbs(10,1,200)
+sigsq_6 = compare_6[1:5000]
+mu_6 = compare_6[5001:10000]
+quantile(sigsq_6, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+0.4921884 3.0052371 
+var(sigsq_6)
+[1] 0.505667
+quantile(mu_6, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+-1.875861  2.033508 
+var(mu_6)
+[1] 0.9923206
+
+### Comparison #7 nu = 1, kappa = 50, sigsq_0 = 200 
+
+compare_7 = Gibbs(1,50,200)
+sigsq_7 = compare_7[1:5000]
+mu_7 = compare_7[5001:10000]
+quantile(sigsq_7, probs = c(.025, .975), na.rm = TRUE)
+       2.5%       97.5% 
+   10.03161 50751.50355 
+var(sigsq_7)
+[1] 1.387734e+17
+quantile(mu_7, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+-1.216214 16.314933 
+var(mu_7)
+[1] 26617.17
+
+### Comparison #8 nu = 10, kappa = 50, sigsq_0 = 200 
+
+compare_8 = Gibbs(10,50,200)
+sigsq_8 = compare_8[1:5000]
+mu_8 = compare_8[5001:10000]
+quantile(sigsq_8, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+ 24.53622 154.62974 
+var(sigsq_8)
+[1] 1299.025
+quantile(mu_8, probs = c(.025, .975), na.rm = TRUE)
+     2.5%     97.5% 
+-1.479666  2.538796 
+var(mu_8)
+[1] 1.05041
+
+First, look at comparisons #1 and #3.  Notice that the variance for mu_3 is much higher than that for mu_1.
+A 95% credible interval for mu_1 is [-0.79, 35.59] whereas a 95% credible interval for mu_3 is [2.76, 250.90].
+So, when our choice of kappa is large, it appears that the marginal posterior of mu will have a larger spread as well.
+
+Second, consider comparisons #1 and #2.  The variance for sigsq_1 is extremely large, 3.21e+12, indicating that the marginal posterior for sigsq
+has a very large spread. We also see this in the 95% credible interval for sigsq, [0.20 1254.46].  Now, we find that
+the variance for sigsq_2 is 0.49 and a 95% credible interval for sigsq_2 is [0.49, 3.06], which are both much smaller than that for comparison #1.
+So, when our choice of nu is large, the marginal posterior for sigsq will be small.
+
+Third, we look at comparisons #1 and #4.  As before, the variance and 95% credible intervals for sigsq_1 are very large. The variance for 
+sigsq_4 is 12025380039, and a 95% credible interval for sigsq_4 is [0.21, 1226.86]. So, it appears that if our choice of sigsq_0 
+is large, the marginal posterior of sigsq will only slightly smaller.
+
+Fourth, consider comparison #6.  Here, we had large choices of nu and sigsq_0.  The variance of sigsq_6 is.51 and a 95% credible interval for 
+sigsq_6 is [.49, 3.01].  So, when we have large choices of both nu and sigsq_0, we will obtain a marginal posterior distribution
+for sigsq that is similar to the marginal posterior from comparison #2.  This indicates that our choice of nu will have a greater impact 
+on the marginal posterior for sigsq.
