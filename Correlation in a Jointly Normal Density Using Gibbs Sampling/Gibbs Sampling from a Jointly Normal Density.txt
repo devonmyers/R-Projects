@@ -1,0 +1,297 @@
+Devon Myers
+Homework #4
+02/18/20
+
+### Problem 1
+theta = NULL
+x = NULL
+y = NULL
+### Let (x_0, y_0) = (80,80)
+x[1] = 80
+y[1] = 80
+
+### Now, generate 500 realizations from the joint normal density f(x,y)
+
+
+for(i in 1:500){
+  x[i+1] = rnorm(1, (.75*y[i]), (sqrt(1-.75^2)))
+  y[i+1] = rnorm(1, (.75*x[i+1]), (sqrt(1-.75^2)))
+}
+
+### Part a
+plot(x[1:50], y[1:50])
+arrows(x[1:49], y[1:49], x[2:50], y[2:50])
+################ save plot as figure 1
+
+### Part b
+plot(x[1:500],y[1:500])
+arrows(x[1:500], y[1:500], x[2:501], y[2:501])
+############### save plot as figure 2
+
+
+### Part c
+ts.plot(x[1:50],xlab="Iterations")
+############# save plot as figure 3
+ts.plot(y[1:50], xlab = "Iterations")
+############# save plot as figure 4
+
+### Considering figures 1 through 4, we can see that an appropriate burn-in value is 10
+### Thus, it will take about 10 iterations for the Gibbs sampler to converge to its stationary distribution
+
+### Part d
+acf(x)
+########### save as figure 5
+acf(y)
+########### save as figure 6
+### Based on the autocorrelation plot of x and y, choose lag=5 to eliminate autocorrelation
+
+### Part e
+lag = 5
+burn = 10
+theta = NULL
+x = NULL
+y = NULL
+x.s = NULL ### Vector accounting for lag
+y.s = NULL ### Vector accounting for lag
+### Let (x_0, y_0) = (80,80)
+x[1] = 80
+y[1] = 80
+for(i in 1:500010) {
+  x[i+1] = rnorm(1, (.75*y[i]), (sqrt(1-.75^2)))
+  y[i+1] = rnorm(1, (.75*x[i+1]), (sqrt(1-.75^2)))
+  if(i %% 5 == 0){ ### save every 5th iteration
+    x.s = c(x.s, x[i])
+    y.s = c(y.s, y[i])
+  }
+}
+
+mean(x.s)
+var(x.s)
+mean(y.s)
+var(y.s)
+quantile(x.s)
+quantile(y.s)
+
+### Problem 2
+
+prob = NULL
+rho = NULL
+rho = c(-.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9)
+### Let p denote the correlation coefficient for rho = {-.9, -.8, ... , .8, .9}
+Gibbs = function(p) {
+  x[1] = 0
+  y[1] = 0
+  for(i in 1:15010) {
+    x = rnorm(1, p*x, (sqrt(1-p^2)))
+    y = rnorm(1, p*x, (sqrt(1-p^2)))
+    if(i %% 5 == 0){ ### save every 5th iteration
+      x.s = c(x.s, x)
+      y.s = c(y.s, y)
+     }
+     z.s = c(x.s, y.s) 
+     return(z.s) 
+     
+  }
+}
+
+prob = NULL
+rho = NULL
+rho = c(-.9, -.8, -.7, -.6, -.5, -.4, -.3, -.2, -.1, 0, .1, .2, .3, .4, .5, .6, .7, .8, .9)
+### Let p denote the correlation coefficient for rho = {-.9, -.8, ... , .8, .9}
+Gibbs = function(p) {
+  x = 0
+  y = 0
+  x.s= NULL
+  y.s = NULL
+  z.s = NULL
+  for(i in 1:150010) {
+    x = rnorm(1, (p*y), (sqrt(1-p^2)))
+    y = rnorm(1, (p*x), (sqrt(1-p^2)))
+    if(i %% 10 == 0){ ### save every 10th iteration
+      x.s = c(x.s, x)
+      y.s = c(y.s, y)
+    }
+  }
+      z.s = c(x.s, y.s) 
+      return(z.s) 
+    
+  
+}
+p1 = Gibbs(-.9)
+p1_x = p1[1:15001]
+p1_y = p1[15002:30002]
+prob1 = (length(p1_x[p1_x > 0 & p1_y > 0])) / 30002
+prob = c(prob, prob1)
+
+p2 = Gibbs(-.8)
+p2_x = p2[1:15001]
+p2_y = p2[15002:30002]
+prob2 = (length(p2_x[p2_x > 0 & p2_y > 0])) / 30002
+prob = c(prob, prob2)
+
+p3 = Gibbs(-.7)
+p3_x = p3[1:15001]
+p3_y = p3[15002:30002]
+prob3 = (length(p3_x[p3_x > 0 &  p3_y > 0])) / 30002
+prob= c(prob, prob3)
+
+p4= Gibbs(-.6)
+p4_x = p4[1:15001]
+p4_y = p4[15002:30002]
+prob4= (length(p4_x[p4_x > 0 & p4_y > 0])) / 30002
+prob = c(prob, prob4)
+
+p5 = Gibbs(-.5)
+p5_x = p5[1:15001]
+p5_y = p5[15002:30002]
+prob5 = (length(p5_x[p5_x > 0 & p5_y > 0])) / 30002
+prob = c(prob, prob5)
+
+p6 = Gibbs(-.4)
+p6_x = p6[1:15001]
+p6_y = p6[15002:30002]
+prob6 = (length(p6_x[p6_x > 0 & p6_y > 0])) / 30002
+prob = c(prob, prob6)
+
+p7 = Gibbs(-.3)
+p7_x = p7[1:15001]
+p7_y = p7[15002:30002]
+prob7 = (length(p7_x[p7_x > 0 & p7_y > 0])) / 30002
+prob = c(prob, prob7)
+
+p8 = Gibbs(-.2)
+p8_x = p8[1:15001]
+p8_y = p8[15002:30002]
+prob8 = (length(p8_x[p8_x > 0 & p8_y > 0])) / 30002
+prob = c(prob, prob8)
+
+p9 = Gibbs(-.1)
+p9_x = p9[1:15001]
+p9_y = p9[15002:30002]
+prob9 = (length(p9_x[p9_x > 0 & p9_y > 0])) / 30002
+prob = c(prob, prob9)
+
+p10 = Gibbs(0)
+p10_x = p10[1:15001]
+p10_y = p10[15002:30002]
+prob10 = (length(p10_x[p10_x > 0 & p10_y > 0])) / 30002
+prob = c(prob, prob10)
+
+p11 = Gibbs(0.1)
+p11_x = p11[1:15001]
+p11_y = p11[15002:30002]
+prob11 = (length(p11_x[p11_x > 0 & p11_y > 0])) / 30002
+prob = c(prob, prob11)
+
+p12 = Gibbs(0.2)
+p12_x = p12[1:15001]
+p12_y = p12[15002:30002]
+prob12 = (length(p12_x[p12_x > 0 & p12_y > 0])) / 30002
+prob = c(prob, prob12)
+
+p13 = Gibbs(0.3)
+p13_x = p13[1:15001]
+p13_y = p13[15002:30002]
+prob13 = (length(p13_x[p13_x > 0 & p13_y > 0])) / 30002
+prob = c(prob, prob13)
+
+p14 = Gibbs(0.4)
+p14_x = p14[1:15001]
+p14_y = p14[15002:30002]
+prob14 = (length(p14_x[p14_x > 0 & p14_y > 0])) / 30002
+prob = c(prob, prob14)
+
+p15 = Gibbs(0.5)
+p15_x = p15[1:15001]
+p15_y = p15[15002:30002]
+prob15 = (length(p15_x[p15_x > 0 & p15_y > 0])) / 30002
+prob = c(prob, prob15)
+
+p16 = Gibbs(0.6)
+p16_x = p16[1:15001]
+p16_y = p16[15002:30002]
+prob16 = (length(p16_x[p16_x > 0 & p16_y > 0])) / 30002
+prob = c(prob, prob16)
+
+p17 = Gibbs(0.7)
+p17_x = p17[1:15001]
+p17_y = p17[15002:30002]
+prob17 = (length(p17_x[p17_x > 0 & p17_y > 0])) / 30002
+prob = c(prob, prob17)
+
+p18 = Gibbs(0.8)
+p18_x = p18[1:15001]
+p18_y = p18[15002:30002]
+prob18 = (length(p18_x[p18_x > 0 & p18_y > 0])) / 30002
+prob = c(prob, prob18)
+
+p19 = Gibbs(0.9)
+p19_x = p19[1:15001]
+p19_y = p19[15002:30002]
+prob19 = (length(p19_x[p19_x > 0 & p19_y > 0])) / 30002
+prob = c(prob, prob19)
+
+plot(rho, prob, ylim =c(0,1), ann=FALSE)
+title(main="P(X > 0 and Y > 0) vs correlation coeff.", col.main="red", font.main=4)
+title(xlab="Correlation coefficient",)
+title(ylab="P(X > 0 and Y > 0)",)
+### Figure 7
+
+### Part b
+prob_b = NULL
+prob_b1 = (length(p1_x[p1_x < 0 & p1_y > 0])) / 30002
+prob_b2 = (length(p2_x[p2_x < 0 & p2_y > 0])) / 30002
+prob_b3 = (length(p3_x[p3_x < 0 & p3_y > 0])) / 30002
+prob_b4 = (length(p4_x[p4_x < 0 & p4_y > 0])) / 30002
+prob_b5 = (length(p5_x[p5_x < 0 & p5_y > 0])) / 30002
+prob_b6 = (length(p6_x[p6_x < 0 & p6_y > 0])) / 30002
+prob_b7 = (length(p7_x[p7_x < 0 & p7_y > 0])) / 30002
+prob_b8 = (length(p8_x[p8_x < 0 & p8_y > 0])) / 30002
+prob_b9 = (length(p9_x[p9_x < 0 & p9_y > 0])) / 30002
+prob_b10 = (length(p10_x[p10_x < 0 & p10_y > 0])) / 30002
+prob_b11 = (length(p11_x[p11_x < 0 & p11_y > 0])) / 30002
+prob_b12 = (length(p12_x[p12_x < 0 & p12_y > 0])) / 30002
+prob_b13 = (length(p13_x[p13_x < 0 & p13_y > 0])) / 30002
+prob_b14 = (length(p14_x[p14_x < 0 & p14_y > 0])) / 30002
+prob_b15 = (length(p15_x[p15_x < 0 & p15_y > 0])) / 30002
+prob_b16 = (length(p16_x[p16_x < 0 & p16_y > 0])) / 30002
+prob_b17 = (length(p17_x[p17_x < 0 & p17_y > 0])) / 30002
+prob_b18 = (length(p18_x[p18_x < 0 & p18_y > 0])) / 30002
+prob_b19 = (length(p19_x[p19_x < 0 & p19_y > 0])) / 30002
+prob_b = c(prob_b1, prob_b2, prob_b3, prob_b4, prob_b5, prob_b6, prob_b7, prob_b8, prob_b9, prob_b10, prob_b11, prob_b12, prob_b13, prob_b14, prob_b15, prob_b16, prob_b17, prob_b18, prob_b19)
+
+plot(rho, prob_b, xlim=c(-1,1), ylim =c(0,1), ann=FALSE)
+title(main="P(X < 0 and Y > 0) vs correlation coeff.", col.main="red", font.main=4)
+title(xlab="Correlation coefficient",)
+title(ylab="P(X < 0 and Y > 0)",)
+### Figure 8
+
+### Part c
+
+prob_c = NULL
+prob_c1 = length(p1_x[p1_x >0])/length(p1_x)
+prob_c2 = length(p2_x[p2_x >0])/length(p2_x)
+prob_c3 = length(p3_x[p3_x >0])/length(p3_x)
+prob_c4 = length(p4_x[p4_x >0])/length(p4_x)
+prob_c5 = length(p5_x[p5_x >0])/length(p5_x)
+prob_c6 = length(p6_x[p6_x >0])/length(p6_x)
+prob_c7 = length(p7_x[p7_x >0])/length(p7_x)
+prob_c8 = length(p8_x[p8_x >0])/length(p8_x)
+prob_c9 = length(p9_x[p9_x >0])/length(p9_x)
+prob_c10 = length(p10_x[p1_x >0])/length(p10_x)
+prob_c11 = length(p11_x[p11_x >0])/length(p11_x)
+prob_c12 = length(p12_x[p12_x >0])/length(p12_x)
+prob_c13 = length(p13_x[p13_x >0])/length(p13_x)
+prob_c14 = length(p14_x[p14_x >0])/length(p14_x)
+prob_c15 = length(p15_x[p15_x >0])/length(p15_x)
+prob_c16 = length(p16_x[p16_x >0])/length(p16_x)
+prob_c17 = length(p17_x[p17_x >0])/length(p17_x)
+prob_c18 = length(p18_x[p18_x >0])/length(p18_x)
+prob_c19 = length(p19_x[p19_x >0])/length(p19_x)
+prob_c = c(prob_c1, prob_c2, prob_c3, prob_c4, prob_c5, prob_c6, prob_c7, prob_c8, prob_c9, prob_c10, prob_c11, prob_c12, prob_c13, prob_c14, prob_c15, prob_c16, prob_c17, prob_c18, prob_c19)
+
+plot(rho, prob_c, xlim=c(-1,1), ylim =c(0,1), ann=FALSE)
+title(main="P(X > 0) vs correlation coeff.", col.main="red", font.main=4)
+title(xlab="Correlation coefficient",)
+title(ylab="P(X > 0)",)
+### Figure 9
