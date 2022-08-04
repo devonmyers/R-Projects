@@ -1,0 +1,25 @@
+### Inverse CDF Sampling for a R.V. X with CDF F(x) = 0.5(x^2+x) for 0<=x<=1
+Now, we will use inverse CDF sampling to generate 5000 realizations of the random variable X whose CDF is given by
+	F(x) = 1/2(x^2 +x) for x in [0,1].
+First, we find the density of X. That is, 
+	f(x) = d/dx[F(x)] = x + 1/2
+Next, we find that the theoretical expected value of X is 7/24.
+Lastly, let y = F(x).  Then, we find the inverse of y.  So,
+	y = 1/2(x^2 +x)
+	x = 1/2(y^2 +y)
+	x = 1/2(sqrt(8y +1)-1)
+
+F_x = NULL
+x= NULL
+for(i in 1:5000){
+  y = runif(1)
+  x = .5*((sqrt(8*y +1)) - 1)
+  F_x = c(F_x, x)
+}
+hist(F_x, probability=T)
+### Figure 1
+
+mean(F_x)
+
+
+

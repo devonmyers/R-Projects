@@ -1,0 +1,15 @@
+>### Inverse CDF Sampling to draw realizations from gamma density with aplha=10 and beta=4.0
+> Gamma = NULL
+> for(i in 1:7500){
+  y = runif(10)
+  x = -(log(1-y))/4
+  tot = sum(x)
+  Gamma = c(Gamma, tot)
+}
+> mean(Gamma)
+[1] 2.509099
+> (sd(Gamma))^2
+[1] 0.6251199
+The estimated mean and variance are 2.5091 and 0.6251, respectively.
+For X ~ Gamma(10,4), the theoretical values of the mean and variance of X are
+E[X] = 10/4 = 2.5 and Var[X] = 10/16 = .625 (see figure 1)

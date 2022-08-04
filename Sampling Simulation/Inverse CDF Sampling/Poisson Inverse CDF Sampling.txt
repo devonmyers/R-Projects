@@ -1,0 +1,32 @@
+### Inverse CDF sampling from a Poisson distribution with parameter lambda=2.1
+Exponential = NULL
+Poisson = NULL
+lambda = 2.1
+
+for(k in 1:7500){
+  sum = 0
+  counter = 0 
+  y = runif(20)
+  Exponential = -(log(1-y)/lambda) ### Realizations from exponential density
+  for(i in 1:20){  ### Number of exp. realizations for sum to exceed 1
+   
+    if(sum < 1)  {
+      sum = sum + Exponential[i]
+      counter = counter + 1
+    }
+    else{
+      sum = 0
+      counter = 0
+      break
+    }
+  }
+  x = counter -1
+  Poisson = c(Poisson, x)
+}
+> mean(Poisson)
+[1] 2.102
+> (sd(Poisson))^2
+[1] 2.066272
+The estimated mean and variance are 2.102 and 2.0663, respectively.  
+For X ~ Pois(2.1), the theoretical values for the mean and variance of X are 
+E[X] = Var[x] = lambda = 2.1

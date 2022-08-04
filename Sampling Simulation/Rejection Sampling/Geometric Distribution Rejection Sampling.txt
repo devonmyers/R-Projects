@@ -1,0 +1,16 @@
+Bernoulli = NULL
+Geometric = NULL
+p = 0.83
+for(k in 1:7500) {  
+  for(i in 1:500) {
+    u = runif(500) 
+    if(u[i] < p) { ### If draw is a success
+      Bernoulli =c(Bernoulli, 1)
+    }
+    else { ### If draw is a fail
+      Bernoulli = c(Bernoulli, 0)
+    }
+  }
+  x = match(1, Bernoulli)
+  Geometric = c(Geometric, x)  
+}

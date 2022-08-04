@@ -1,0 +1,26 @@
+> ### Rejection sampling from a binomial distribution with parameters n=200, p=0.02
+Binomial = NULL
+p = 0.02
+bin = 0
+
+for(k in 1:7500){
+  y = runif(200)
+  Bernoulli = NULL
+  for (i in 1:200) { ### Convert to Bernoulli
+    if(y[i] < p) { ### If draw is a success
+      Bernoulli =c(Bernoulli, 1)
+      }
+    else { ### If draw is a fail
+      Bernoulli = c(Bernoulli, 0)
+    }
+  }  
+  bin = sum(Bernoulli)
+  Binomial = c(Binomial, bin)
+}
+> mean(Binomial)
+[1] 4.018533
+> (sd(Binomial))^2
+[1] 3.913112 
+The estimated mean and variance are 4.0185 and 3.9131, respectively.  
+For X ~ Bin(200, 0.02), the theoretical values of the mean and variance of X are 
+E[X] = np = 4 and Var = np(1-p) = 3.92

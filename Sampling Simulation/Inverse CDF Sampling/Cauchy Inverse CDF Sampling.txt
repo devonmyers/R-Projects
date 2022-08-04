@@ -1,0 +1,11 @@
+> ### Inverse CDF sampling from standard Cauchy density
+Cauchy = NULL
+for(i in 1:7500) {
+  y = runif(1)
+  x = tan(pi*(y-.5))
+  Cauchy = c(Cauchy, x)
+}
+> mean(Cauchy)
+[1] 1.452842
+> (sd(Cauchy))^2
+[1] 8986.254

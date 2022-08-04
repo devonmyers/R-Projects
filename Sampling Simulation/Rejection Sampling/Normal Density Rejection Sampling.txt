@@ -1,0 +1,32 @@
+> ### Rejection sampling from the standard Normal density with a   ### Cauchy reference density
+Cauchy = NULL 
+Normal = NULL
+t = 0 
+f = 0 
+for(i in 1:7500) { ### sampling from Cauchy distribution
+  y = runif(1)
+  x = tan(pi*(y-.5))
+  Cauchy = c(Cauchy, x)
+}
+ 
+x.s = Cauchy
+for(i in 1:7500) {
+  u = runif(1)
+  q = Cauchy[i]
+  p = (((q^2) + 1)*exp(.5 - ((q^2)/2))*.5)
+  if(u < p) { ### if q is accepted
+     Normal = c(Normal, q)
+     t = t + 1
+   }
+  else { ### q is rejected
+     t = t+1 
+     f = f+1
+     }
+ }
+> mean(Normal)
+[1] -0.01455801
+> (sd(Normal))^2
+[1] 0.9531944
+The estimated mean and variance are -.0146 and 0.9532, respectively
+For X ~ Norm(0, 1), the theoretical values of the mean and variance of X are 
+E[X] = 0 and Var = 1 (see figure 2)
